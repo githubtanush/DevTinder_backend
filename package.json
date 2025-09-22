@@ -1,0 +1,24 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "tinder for developers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
+  },
+  "keywords": [
+    "nodejs",
+    "javascript"
+  ],
+  "author": "Tanush Arora",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "express": "^5.1.0"
+  },
+  "dependencies": {
+    "tailwindcss": "^4.1.13"
+  }
+}
