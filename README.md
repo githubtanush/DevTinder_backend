@@ -5,7 +5,9 @@ DevTinder is a **MERN stack** web application designed to help developers **conn
 
 This repository contains the **backend** of DevTinder, built with **Node.js, Express, and MongoDB**, following a **microservices architecture** for scalability.
 
-> ⚠️ **Note:** The backend is **fully functional** and ready for further scaling and optimizations.
+Soon all the updates visible 
+
+<!-- > ⚠️ **Note:** The backend is **fully functional** and ready for further scaling and optimizations.
 
 
 ## 🛠️ Tech Stack
@@ -132,7 +134,7 @@ npm start
 ```
 Server runs at: `http://localhost:3000/`
 
----
+--- -->
 
 <!-- ## 🔗 Frontend Integration
 The frontend for DevTinder is available at:
