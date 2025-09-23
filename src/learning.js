@@ -91,30 +91,33 @@ const app = express(); //now this app is creating a new web server
 // app.get("/.*fly$/",(req,res)=>{
 //     res.send("Hanji!! mil gya sb kuch !!");
 // })
-app.get("/user/:userId/:name/:password",(req,res) =>{
-    // console.log(req.query); 
-    console.log(req.params);
-    res.send({firstname : "Tanush", lastname : "Arora"});
-}) 
-//This route will only connect to the post call
-app.post("/user",(req,res) =>{
-    console.log("Save data to the database");
-    res.send("Database successfully connected to the database");
-})
-app.delete("/user",(req,res)=>{
-    res.send("Deleted Successfully!!!");
-})
 
-//This will match all the http method api calls to /test
-app.use("/test",(req,res) => {
-    res.send("Hello from the server!!!Namaste server jii")
-});
-app.use("/hello",(req,res) => {
-    res.send("Hello from the server!!!Namaste server jiii")
-});
-app.use("/getSecretData",(req,res) => {
-    res.send("Hello from the server!!!")
-});
+//if we not send any response from server then it returns nothing
+//and go into infinite loop and then sending sending sending and then terminate
+// app.get("/user/:userId/:name/:password",(req,res) =>{
+//     // console.log(req.query); 
+//     console.log(req.params);
+//     res.send({firstname : "Tanush", lastname : "Arora"});
+// }) 
+// //This route will only connect to the post call
+// app.post("/user",(req,res) =>{
+//     console.log("Save data to the database");
+//     res.send("Database successfully connected to the database");
+// })
+// app.delete("/user",(req,res)=>{
+//     res.send("Deleted Successfully!!!");
+// })
+
+// //This will match all the http method api calls to /test
+// app.use("/test",(req,res) => {
+//     res.send("Hello from the server!!!Namaste server jii")
+// });
+// app.use("/hello",(req,res) => {
+//     res.send("Hello from the server!!!Namaste server jiii")
+// });
+// app.use("/getSecretData",(req,res) => {
+//     res.send("Hello from the server!!!")
+// });
 //NOTE:- the order is very very important which route handler you write first first that will handle then bottom one 
 //then last one if u write /hello then it go first /hello then /test then / 
 //so the order of writing the route is very important 
@@ -128,6 +131,22 @@ app.use("/getSecretData",(req,res) => {
 //this postman application will generally used for API testing 
 
 //now when i create the web server i listen the request 
+
+//Multiple route handlers
+app.use("/user",(req,res) =>{
+    //Route handler 
+    //res.send("Route handler 1");
+    //if we don't send the response back then we hanging there
+    console.log("handling the route user!!!");
+    res.send("Response!!!");
+    next();
+},
+//multiple route handlers in single one
+(req,res,next) =>{
+    console.log("Handling the route user2!!!");
+    res.send("2nd Response!!!");
+})
+
 app.listen(7777,() => {
     console.log("Server is successfully listening on port 7777.....")
 }); //app is listening on that server we have create the server now over 
