@@ -1,0 +1,88 @@
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const userSchema = new mongoose.Schema({
+    firstName:{
+        type:String,
+        reuired:true,
+        minLength: 3
+    },
+    lastName:{
+        type:String,
+        required:true
+    },
+    emailId:{
+        type:String,
+        required:true,
+        unique:true,
+        lowercase:true,
+        trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid email address : "+ value);
+            }
+        }
+    },
+    password:{
+        type:String,
+        required:true,
+        // minLength: 8,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Tera password C hai teri ______ di _____: " + value);
+            }
+        }
+    },
+    age:{
+        type:Number,
+        min: 0
+    },
+    about:{
+        type:String,
+        default:"This is default for user"
+    },
+    gender:{
+        type: String,
+        // enum:['Male','female','other'],
+        //Still this function does not work still we not update the patch api to runvalidators :true
+        validate(value){
+            if(!["male","Male","Female","female","Others","others"].includes(value)){
+                throw new Error ("Not a valid gender (male, female and others)")
+            }
+        },
+        // required:true
+    },
+    photoUrl:{
+        type: String,
+    },
+    skills:{
+        type: [String],
+    }
+},{
+    timestamps:true
+});
+
+
+//cannot use arrow function in that as they break logic
+//cannot use arrow function as this function is a very different implementation 
+// so inside arrow function this function will cannot work
+userSchema.methods.getJWT = async function (){
+
+    //This function will have a very closely related to user schema as every user has their own
+    //different json web token 
+    const user = this;
+    const token = await jwt.sign({_id:user._id},"Tanush@123",{
+        expiresIn:"7d",
+    });
+    return token;
+};
+userSchema.methods.validatePassword = async function(passwordInputByUser){
+    const user = this;
+    const passwordHash = user.password;
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser,passwordHash);
+    return isPasswordValid;
+}
+
+module.exports = mongoose.model('user',userSchema);
