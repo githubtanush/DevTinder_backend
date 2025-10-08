@@ -45,13 +45,16 @@ const userSchema = new mongoose.Schema({
     },
     gender:{
         type: String,
-        // enum:['Male','female','other'],
+        enum:{
+            values : ['Male','female','other'],
+            message : `{VALUE} is not a valid gender type.`
+        }
         //Still this function does not work still we not update the patch api to runvalidators :true
-        validate(value){
-            if(!["male","Male","Female","female","Others","others"].includes(value)){
-                throw new Error ("Not a valid gender (male, female and others)")
-            }
-        },
+        // validate(value){
+        //     if(!["male","Male","Female","female","Others","others"].includes(value)){
+        //         throw new Error ("Not a valid gender (male, female and others)")
+        //     }
+        // },
         // required:true
     },
     photoUrl:{
