@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     firstName:{
         type:String,
         reuired:true,
-        minLength: 3
+        minLength: 3,
+        index:true //This means this is index 
     },
     lastName:{
         type:String,
@@ -16,6 +17,8 @@ const userSchema = new mongoose.Schema({
     emailId:{
         type:String,
         required:true,
+        //mongodb automatically creates index for unique:true
+        //unique index is much faster
         unique:true,
         lowercase:true,
         trim:true,
@@ -67,6 +70,15 @@ const userSchema = new mongoose.Schema({
     timestamps:true
 });
 
+//but also don't good to create unnecessary index as this is very costly
+//when u create a lot of index this is also very difficult to db 
+//so please create and aware of all the index you made off.
+//why do we need indexing in DB?
+//what is advantages and disadvanatages of creating indexes in DB?
+// const user = mongoose.model("user",userSchema);
+
+// user.find({firstName: "Tanush", lastName : "Arora"});
+// userSchema.index({firstName:1,lastName:1}); //this is known as the compound index
 
 //cannot use arrow function in that as they break logic
 //cannot use arrow function as this function is a very different implementation 
