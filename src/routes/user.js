@@ -2,6 +2,7 @@ const express = require('express');
 const userRouter = express.Router();
 const { userAuth } = require('../middlewares/auth');
 const ConnectionRequest = require("../models/connectionRequest");
+const user = require("../models/user");
 
 const USER_SAFE_DATA = "firstName lastName age gender photourl about skills";
 
@@ -50,4 +51,50 @@ userRouter.get("/user/connections",userAuth,async (req,res)=>{
         }
 })
 
+userRouter.get("/user/feed",userAuth,async (req,res) =>{
+    try{
+        //Todo : 
+        //1.) user should not see it's own card 
+        //2.) user should not see the card who already ignored it 
+        //3.) user should not see which they already sent the connection request
+
+        //Example - Rahul = [Akshay , Elon , tanush , virat, ms dhoni]
+        // Rahul -> Akshay -> rejected , R -> Elon -> Accepted
+        // Elong -> everyone else but not rahul 
+        // Akshay -> not Rahul Rest all 
+        const loggedInUser = req.user;
+
+        //Find all the connections request (sent + received)
+        const connectionRequest = await ConnectionRequest.find({
+            $or:[
+                {fromUserId : loggedInUser._id},
+                {toUserId : loggedInUser._id}
+            ],
+
+        }).select("fromUserId toUserId")
+        // .populate("fromUserId","firstName")
+        // .populate("toUserId","firstName");
+
+        const hideUsersFromFeed = new Set();
+        connectionRequest.forEach((req) => {
+            hideUsersFromFeed.add(req.fromUserId.toString());
+            hideUsersFromFeed.add(req.toUserId.toString());
+        });
+        // console.log(hideUsersFromFeed);
+        const users = await user.find({
+           $and: [ 
+            {_id : { $nin: Array.from(hideUsersFromFeed) }  },
+            { _id: { $ne : loggedInUser._id }  },
+        ],
+        }).select(USER_SAFE_DATA);
+
+        // res.send(connectionRequest);
+        res.json({
+            message : "Data fetched successfully",
+            data : users
+        });
+    }catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
 module.exports = userRouter;
