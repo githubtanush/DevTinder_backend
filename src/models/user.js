@@ -88,7 +88,7 @@ userSchema.methods.getJWT = async function (){
     //This function will have a very closely related to user schema as every user has their own
     //different json web token 
     const user = this;
-    const token = await jwt.sign({_id:user._id},"Tanush@123",{
+    const token = await jwt.sign({_id:user._id},process.env.JWT_SECRET,{
         expiresIn:"7d",
     });
     return token;
