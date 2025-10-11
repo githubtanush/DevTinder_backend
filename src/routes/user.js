@@ -51,6 +51,8 @@ userRouter.get("/user/connections",userAuth,async (req,res)=>{
         }
 })
 
+// '/feed?page=2&limit=100' 
+
 userRouter.get("/user/feed",userAuth,async (req,res) =>{
     try{
         //Todo : 
@@ -63,6 +65,11 @@ userRouter.get("/user/feed",userAuth,async (req,res) =>{
         // Elong -> everyone else but not rahul 
         // Akshay -> not Rahul Rest all 
         const loggedInUser = req.user;
+
+        const page = parseInt(req.query.page) || 1 ;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = limit > 50 ? 50 : limit;
+        const skip = ( page - 1 ) *  limit;
 
         //Find all the connections request (sent + received)
         const connectionRequest = await ConnectionRequest.find({
@@ -86,13 +93,16 @@ userRouter.get("/user/feed",userAuth,async (req,res) =>{
             {_id : { $nin: Array.from(hideUsersFromFeed) }  },
             { _id: { $ne : loggedInUser._id }  },
         ],
-        }).select(USER_SAFE_DATA);
+        }).select(USER_SAFE_DATA)
+        .skip(skip)
+        .limit(limit);
 
         // res.send(connectionRequest);
-        res.json({
-            message : "Data fetched successfully",
-            data : users
-        });
+        // res.json({
+        //     message : "Data fetched successfully",
+        //     data : users
+        // });
+        res.send(users);
     }catch(err){
         res.status(400).json({message : err.message});
     }
